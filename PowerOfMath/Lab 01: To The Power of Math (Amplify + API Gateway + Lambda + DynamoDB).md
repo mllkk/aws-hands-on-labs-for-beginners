@@ -32,3 +32,69 @@ Reference: Tiny Technical Tutorials. (2026, October 20). AWS Project: Architect 
 
 You should see a simple web page like this:
 <img width="945" height="202" alt="image" src="https://github.com/user-attachments/assets/cbbcd2b1-8979-472a-8381-8ab6b205da37" />
+
+### 2. Create Business Logic (AWS Lambda)
+
+* Open the AWS Lambda Console and click **Create function**.
+* Configure Settings:
+   * Select **Author from scratch**.
+   * **Function name:** `PowerOfMathFunction`
+   * **Runtime:** `Python 3.14` (or latest Python version available)
+   * Click **Create function**.
+* Copy the code from the `PowerOfMathFunction-Lambda-ORIGINAL.txt` file (located in the `Codes` folder) and paste it into the **Code source** editor.
+   > 💡 **Note:** This Python function accepts two variables, `base` and `exponent`, and performs the mathematical calculation.
+   * Click **Save** and then click **Deploy** to publish the changes.
+     <img width="945" height="482" alt="image" src="https://github.com/user-attachments/assets/6ac88d7b-3ca2-4e0a-af59-f68fa1a1414c" />
+
+* Test the Function:
+   * Click **Test** button in the Lambda console.
+   * **Invocation type:** Synchronous
+   * **Event name:** `powerOfMathTest`
+   * **Event sharing settings:** Private
+   * Paste your JSON test payload (containing `base` and `exponent` values) into the **Event JSON** area.
+  ```json
+     {
+       "base": 3,
+       "exponent": 2
+     }
+     ```
+* Click the orange **Test** button. Upon successful execution, you should see a `200` status code along with the calculated math result.
+  <img width="945" height="374" alt="image" src="https://github.com/user-attachments/assets/1f46551b-01f0-4e99-a52b-06fdc497602b" />
+
+  
+### 3. Configure API Gateway
+
+To enable communication between the Amplify frontend and the Lambda function, an API Gateway is required.
+1. **Create REST API:**
+   * Open the **API Gateway** console and click **Create API**.
+   * Locate **REST API** and click **Build**.
+   * Enter an **API name** (e.g., `PowerOfMathAPI`) and click **Create API**.
+
+2. **Create POST Method:**
+   * In the newly created empty API, click **Create method**.
+   * **Method type:** `POST`
+   * **Integration type:** Lambda Function
+   * **Lambda function:** Select your Lambda function (or enter the ARN for `PowerOfMathFunction`).
+   * Click **Create method**.
+
+3. **Enable CORS:**
+   > 💡 **Note:** Since AWS Amplify and API Gateway run on different domains, Cross-Origin Resource Sharing (CORS) must be enabled to allow the frontend application to send requests to the API.
+   * Select your resource or method and click **Enable CORS**.
+   * Under **Access-Control-Allow-Methods**, ensure **POST** is selected.
+   * Save the CORS configuration.
+   * Deploy API after this operation.
+     <img width="945" height="299" alt="image" src="https://github.com/user-attachments/assets/18291f02-d008-4f91-a720-447f7d7213c8" />
+
+
+4. **Test the API Endpoint:**
+   * Navigate to **Resources** > **POST** and click the **Test** tab.
+   * In the **Request Body**, paste the JSON test payload (containing `base` and `exponent`).
+   * Click **Test**.
+   * Verify that the execution returns a `200` status code along with the expected response body:
+    ```json
+     {
+       "statusCode": 200,
+       "body": "\"Your result is 9.0\""
+     }
+     ```
+    <img width="945" height="389" alt="image" src="https://github.com/user-attachments/assets/37d46771-2c0b-469a-897f-d21a0b73c700" />
