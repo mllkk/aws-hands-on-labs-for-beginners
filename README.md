@@ -20,6 +20,6 @@ Each directory inside this repository represents an independent, end-to-end lab 
 
 | Lab / Project | Description | Tech Stack / AWS Services |
 | :--- | :--- | :--- |
-| **[PowerOfMath](./PowerOfMath/Lab-01-To-The-Power-Of-Math)** | A simple serverless web application that performs mathematical calculations and saves the execution history to a database. | AWS Amplify, API Gateway, AWS Lambda, DynamoDB, IAM |
+| **[PowerOfMath](./PowerOfMath/Lab 01: To The Power of Math (Amplify + API Gateway + Lambda + DynamoDB).md)** | A simple serverless web application that performs mathematical calculations and saves the execution history to a database. | AWS Amplify, API Gateway, AWS Lambda, DynamoDB, IAM |
 
 
