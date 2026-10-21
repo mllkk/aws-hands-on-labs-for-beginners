@@ -98,3 +98,81 @@ To enable communication between the Amplify frontend and the Lambda function, an
      }
      ```
     <img width="945" height="389" alt="image" src="https://github.com/user-attachments/assets/37d46771-2c0b-469a-897f-d21a0b73c700" />
+
+### 4. Provision Database and Configure Permissions
+
+1. **Create DynamoDB Table:**
+   * Open the **DynamoDB** console and click **Create table**.
+   * **Table name:** `PoMDatabase`
+   * **Partition key:** `ID` (Type: `String` or `Number` based on your implementation)
+   * Click **Create table**.
+   * Note down the **Table ARN**.  
+     > 💡 *If needed, you can retrieve it anytime via: DynamoDB > Tables > PoMDatabase > General Information > Amazon Resource Name (ARN).*
+
+2. **Configure IAM Permissions for Lambda:**
+   > 💡 **Note:** To allow the web application to save calculation history, the Lambda function requires write access to the DynamoDB table.
+   * Go to your Lambda function (`PowerOfMathFunction`).
+   * Navigate to **Configuration** > **Permissions** and click the role link under **Role name**.
+   * In the IAM Management Console, click **Add permissions** > **Create inline policy**.
+   <img width="945" height="393" alt="image" src="https://github.com/user-attachments/assets/cb8f72f5-2248-46ab-b0b9-8362e8c30b21" />
+
+   * Switch to the **JSON** tab and paste the policy content from `Execution Role Policy JSON.txt` (located in the `Codes` folder).
+   * Ensure your DynamoDB Table ARN is correctly referenced within the policy JSON.
+   * Click **Next**, enter a policy name (e.g., `PowerOfMathDynamoDBWritePolicy`), and click **Create policy**.
+   <img width="945" height="308" alt="image" src="https://github.com/user-attachments/assets/1baa98ae-40fe-4df7-819a-8ba2aae229ac" />
+
+
+3. **Update Lambda Function to Final Version:**
+   * Return to the Lambda function editor.
+   * Copy the code from `PowerOfMathFunction-Lambda-FINAL.txt` and paste it into the code area.
+   * Verify that the table name in the code matches your DynamoDB table:
+     ```python
+     # Use the DynamoDB resource to select your table
+     table = dynamodb.Table('PoMDatabase')
+     ```
+   * Click **Save** and then **Deploy**.
+
+4. **Verify Database Insertion:**
+   * Execute a test invocation using the previously configured `powerOfMathTest` payload.
+   * Confirm that the test returns a `200` status code.
+   * Navigate to the **DynamoDB** console, select **Explore items** from the left menu, and click on `PoMDatabase`.
+   * Verify that a new record containing the calculation result has been successfully written to the table.
+   <img width="945" height="239" alt="image" src="https://github.com/user-attachments/assets/0af6e1da-c97e-41aa-a844-fec0a2acf55f" />
+
+### 5. Update the Web Application
+
+In the first step, a basic static web page was deployed for testing. Now, the frontend application will be updated to collect user input (base and exponent) and send calculation requests to the backend via the API Gateway endpoint.
+
+1. **Configure API Endpoint in Frontend Code:**
+   * Open the `index-FINAL.html` file (located in the `Codes` folder).
+   * Navigate to the **API Gateway** console, go to **Stages**, and copy the **Invoke URL**.
+   * Replace the placeholder API URL in `index-FINAL.html` with your actual API Gateway Invoke URL.
+   * Rename `index-FINAL.html` to `index.html` and compress it into a `.zip` archive.
+   <img width="945" height="254" alt="image" src="https://github.com/user-attachments/assets/0334508a-b7ed-440e-9deb-d8ee443e75fd" />
+
+
+2. **Deploy Updated Frontend:**
+   * Open the **AWS Amplify** console and select your `PowerOfMath` application.
+   * Click **Deploy updates** (or **Upload deployment**).
+   * Drag and drop the updated `.zip` file containing `index.html`.
+   * Click **Save and deploy**.
+
+3. **Verify End-to-End Application:**
+   * Access your application via the Amplify domain link.
+   * Enter two numbers (base and exponent) and click the calculate button.
+   * Confirm that the result is calculated via Lambda, displayed on the web interface, and stored in the DynamoDB table.
+   <img width="945" height="313" alt="image" src="https://github.com/user-attachments/assets/5a60ee8d-f60e-4daa-9fa1-7bf7821a2441" />
+
+
+🎉 **Congratulations! You have successfully built and deployed an end-to-end serverless web application on AWS!**
+
+### 🧹 Resource Cleanup
+<img width="945" height="348" alt="image" src="https://github.com/user-attachments/assets/bbcdca7d-9b36-4a02-a4a1-00795b21718f" />
+<img width="945" height="152" alt="image" src="https://github.com/user-attachments/assets/79229b36-89d4-46cf-8402-d7bd15914e49" />
+<img width="945" height="168" alt="image" src="https://github.com/user-attachments/assets/c04c775e-53f9-4b73-ba40-9eaa22d4e919" />
+<img width="945" height="222" alt="image" src="https://github.com/user-attachments/assets/a2f2b047-cb24-44d0-aca5-ce0355554215" />
+
+
+
+
+
